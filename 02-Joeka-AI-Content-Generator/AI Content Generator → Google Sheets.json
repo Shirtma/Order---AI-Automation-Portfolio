@@ -1,0 +1,262 @@
+{
+  "name": "AI Content Generator → Google Sheets",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1840,
+        -80
+      ],
+      "id": "bdac8523-a68c-40ed-9a02-761ad4d8f5af",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "76518966-5695-4d34-bed0-69ddf42f655e",
+              "name": "Platform ",
+              "value": "Instagram",
+              "type": "string"
+            },
+            {
+              "id": "61a2fe27-cf89-45f9-aa6f-3a0729c055a3",
+              "name": "prompt",
+              "value": "Generate 10 engaging Instagram content ideas for Joeka, a premium streetwear brand targeting young professionals in Africa. Return them as a numbered list.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1584,
+        -176
+      ],
+      "id": "7cef00f9-27bd-461d-a4a4-09c6d892644a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{$json.prompt}}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -1632,
+        64
+      ],
+      "id": "e7ac2af7-833a-4612-950d-bea750276d71",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ujgKYCcxGPEValbW",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b47d9172-8118-42a4-8496-584394dcad0f",
+              "name": "Date",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "15de2145-57f5-40f3-88b8-b7d93e40f9ef",
+              "name": "platform",
+              "value": "={{ $('Edit Fields').item.json[\"Platform \"] }}",
+              "type": "string"
+            },
+            {
+              "id": "dc1a112e-b7e8-4c5c-9876-e27220dff28c",
+              "name": "prompt",
+              "value": "={{ $('Edit Fields').item.json.prompt }}",
+              "type": "string"
+            },
+            {
+              "id": "e8d48322-92c2-4e28-8511-b3807988731c",
+              "name": "AI Response",
+              "value": "={{ $json.output[0].content[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1344,
+        -64
+      ],
+      "id": "3006f49d-d79f-4257-be4e-95a640ed0d2b",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1guNDSgeyNHPZ8DaJh8WRQLb_SjnPNNs1cfy7OF2ii3E/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1guNDSgeyNHPZ8DaJh8WRQLb_SjnPNNs1cfy7OF2ii3E/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Platform": "={{ $json.platform }}",
+            "Prompt": "={{ $json.prompt }}",
+            "AI Response": "={{ $json[\"AI Response\"] }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Platform",
+              "displayName": "Platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Prompt",
+              "displayName": "Prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "AI Response",
+              "displayName": "AI Response",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1104,
+        -64
+      ],
+      "id": "5f9163d5-3b27-4bb6-a3e1-28a8a3d289fa",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "sj5KoYdACX8KMUzJ",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "8ab6490d-7026-486b-a22e-153c50f395df",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0eda089667d465000e75438c50fd50b8c116330b41f1f55f59c5072ad743bec9"
+  },
+  "id": "30_qJY7dARqzGJxk1hqDD",
+  "tags": []
+}
