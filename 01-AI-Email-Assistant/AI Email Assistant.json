@@ -1,0 +1,117 @@
+{
+  "name": "AI Email Assistant",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        -48
+      ],
+      "id": "ba6da6a5-3d2a-43e8-9e0d-ff9b443348d5",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "Generate 5 content ideas for a clothing brand"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -80,
+        -48
+      ],
+      "id": "772f9cad-1cad-484d-b96d-140aeb7e0a32",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ujgKYCcxGPEValbW",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "mikevancura8@gmail.com",
+        "subject": " Here are five content ideas for a clothing ",
+        "emailType": "text",
+        "message": "={$json.output[0].content[0].text{ $json.output[0].content[0].text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        272,
+        -48
+      ],
+      "id": "b7322692-de46-41c2-9bb8-739f11faa46a",
+      "name": "Send a message",
+      "webhookId": "3a952942-19bf-431f-83f2-b44071392349",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "787487QByfeNUgmY",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "c184f8e6-aa09-4d7e-b89d-7187396ae7fc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0eda089667d465000e75438c50fd50b8c116330b41f1f55f59c5072ad743bec9"
+  },
+  "id": "y8F8Z-fpvygLI2hONwCZb",
+  "tags": []
+}
